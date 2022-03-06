@@ -3,9 +3,7 @@ package com.example.efisherypricelist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.efisherypricelist.data.MainRepository
@@ -41,25 +37,31 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             EfisheryPriceListTheme {
-                Column {
-                    Header { viewModel.getPricesByName(it) }
-                    DropdownSort { by ->
-                        when (by) {
-                            "Name" -> viewModel.sortPricesByName().observe(this@MainActivity) {
-                                viewModel.setData(it)
-                            }
-                            "Price" -> viewModel.sortPricesByPrice().observe(this@MainActivity) {
-                                viewModel.setData(it)
-                            }
-                            "Size" -> viewModel.sortPricesBySize().observe(this@MainActivity) {
-                                viewModel.setData(it)
+                Box {
+                    Column {
+                        Header { viewModel.getPricesByName(it) }
+                        DropdownSort { by ->
+                            when (by) {
+                                "Name" -> viewModel.sortPricesByName().observe(this@MainActivity) {
+                                    viewModel.setData(it)
+                                }
+                                "Price" -> viewModel.sortPricesByPrice()
+                                    .observe(this@MainActivity) {
+                                        viewModel.setData(it)
+                                    }
+                                "Size" -> viewModel.sortPricesBySize().observe(this@MainActivity) {
+                                    viewModel.setData(it)
+                                }
                             }
                         }
-                    }
-                    val listData by viewModel.prices.observeAsState(initial = emptyList())
-                    LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        items(listData) { fish ->
-                            ItemData(fish)
+                        val listData by viewModel.prices.observeAsState(initial = emptyList())
+                        LazyColumn(
+                            contentPadding = PaddingValues(20.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            items(listData) { fish ->
+                                ItemData(fish)
+                            }
                         }
                     }
                 }
@@ -103,9 +105,9 @@ fun DropdownSort(filter: (String) -> Unit) {
 
 @Composable
 fun ItemData(fish: Fish) {
-    Row {
-        Text(fish.name, fontSize = 20.sp, color = Color.Black)
+    if (fish.name.length < 25) {
         Column {
+            Text(fish.name, fontSize = 20.sp, color = Color.Black)
             Text(fish.price.toString())
             Text(fish.size.toString())
         }
@@ -115,7 +117,7 @@ fun ItemData(fish: Fish) {
 @Composable
 fun Header(callback: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        val textState = remember { mutableStateOf(TextFieldValue()) }
+        val textState = remember { mutableStateOf("") }
         Image(painterResource(R.drawable.logo_efishery), "logo efishery")
         Card (
             modifier = Modifier.padding(10.dp),
@@ -126,19 +128,24 @@ fun Header(callback: (String) -> Unit) {
                 value = textState.value,
                 onValueChange = {
                     textState.value = it
-                    callback(it.text)
+                    callback(it)
                 },
-                modifier = Modifier.border(
-                    BorderStroke(width = 2.dp, color = Purple500),
-                    shape = RoundedCornerShape(50)
-                ),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 trailingIcon = {
-                    Icon(painterResource(R.drawable.ic_search), "search")
+                    if (textState.value.isEmpty()) {
+                        Icon(painterResource(R.drawable.ic_search), "search")
+                    } else {
+                        IconButton(onClick = {
+                            textState.value = ""
+                            callback(textState.value)
+                        }) {
+                            Icon(painterResource(R.drawable.ic_clear), "clear")
+                        }
+                    }
                 }
             )
         }
