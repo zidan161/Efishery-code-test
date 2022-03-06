@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.efisherypricelist.data.MainRepository
 import com.example.efisherypricelist.model.Fish
 import com.example.efisherypricelist.ui.theme.EfisheryPriceListTheme
@@ -103,9 +104,10 @@ fun DropdownSort(filter: (String) -> Unit) {
 @Composable
 fun ItemData(fish: Fish) {
     Row {
-        Text(fish.name, )
+        Text(fish.name, fontSize = 20.sp, color = Color.Black)
         Column {
             Text(fish.price.toString())
+            Text(fish.size.toString())
         }
     }
 }
@@ -115,7 +117,11 @@ fun Header(callback: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         val textState = remember { mutableStateOf(TextFieldValue()) }
         Image(painterResource(R.drawable.logo_efishery), "logo efishery")
-        Card (modifier = Modifier.padding(10.dp)) {
+        Card (
+            modifier = Modifier.padding(10.dp),
+            elevation = 10.dp,
+            shape = RoundedCornerShape(20.dp)
+        ) {
             TextField(
                 value = textState.value,
                 onValueChange = {

@@ -7,10 +7,14 @@ import com.example.efisherypricelist.model.Fish
 
 class FishViewModel(private val repository: MainRepository): ViewModel() {
 
+    private var listPrice = mutableListOf<Fish>()
+
     var prices = MutableLiveData<List<Fish>>()
 
     fun setData(list: List<Fish>) {
-        prices.value = list
+        listPrice.clear()
+        listPrice.addAll(list)
+        prices.value = listPrice
     }
 
     fun getPrices() = repository.getPrices()
@@ -22,7 +26,7 @@ class FishViewModel(private val repository: MainRepository): ViewModel() {
     fun sortPricesBySize() = repository.orderPricesBySize()
 
     fun getPricesByName(name: String) {
-        prices.value?.filter { it.name.contains(name) }.let {
+        listPrice.filter { it.name.lowercase().contains(name.lowercase()) }.let {
             prices.value = it
         }
     }

@@ -34,10 +34,6 @@ class MainRepository(private val application: Application) {
         return mFishDao.getFishOrderBySize()
     }
 
-    fun getPricesByName(name: String): LiveData<List<Fish>> {
-        return mFishDao.getFishByName(name)
-    }
-
     private fun updatePrices() {
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
