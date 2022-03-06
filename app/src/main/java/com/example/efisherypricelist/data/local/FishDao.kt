@@ -15,7 +15,13 @@ interface FishDao {
     @Delete
     fun delete(fish: Fish)
 
-    @Query("SELECT * from fish ORDER BY dateParsed ASC")
+    @Query("SELECT * from fish WHERE id = :id")
+    fun getAlreadyFish(id: String): Fish?
+
+    @Query("SELECT * from fish WHERE name = :name")
+    fun getFishByName(name: String): LiveData<List<Fish>>
+
+    @Query("SELECT * from fish")
     fun getFish(): LiveData<List<Fish>>
 
     @Query("SELECT * from fish ORDER BY name")

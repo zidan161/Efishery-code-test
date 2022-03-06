@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Efishery Price List</string>
+    <string name="title_activity_add_data">AddDataActivity</string>
 </resources>

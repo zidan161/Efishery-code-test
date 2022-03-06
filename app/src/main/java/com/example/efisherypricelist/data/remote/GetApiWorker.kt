@@ -19,13 +19,19 @@ class GetApiWorker(private val context: Context, params: WorkerParameters): Work
     override fun doWork(): Result {
 
         val db = MainDatabase.getDatabase(context)
+        val fishDao = db.fishDao()
         val api = ApiHelper.getApiService()
 
         return try {
             api.getPrices().enqueueData {
                 executorService.execute {
                     for (i in it) {
-                        db.fishDao().insert(i)
+                        val exist = fishDao.getAlreadyFish(i.id)
+                        if (exist == null) {
+                            fishDao.insert(i)
+                        } else {
+                            fishDao.update(i)
+                        }
                     }
                 }
             }

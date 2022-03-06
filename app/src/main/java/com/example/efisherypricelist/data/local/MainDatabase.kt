@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.efisherypricelist.model.Area
 import com.example.efisherypricelist.model.Fish
-import com.example.efisherypricelist.model.Size
 
 @Database(entities = [Fish::class], version = 1)
 abstract class MainDatabase : RoomDatabase() {
