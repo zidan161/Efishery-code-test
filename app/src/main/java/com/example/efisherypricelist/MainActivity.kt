@@ -1,4 +1,4 @@
-package com.example.efisherypricelist
+ package com.example.efisherypricelist
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,12 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.efisherypricelist.data.MainRepository
 import com.example.efisherypricelist.model.Fish
 import com.example.efisherypricelist.ui.theme.EfisheryPriceListTheme
-import com.example.efisherypricelist.ui.theme.Purple500
 
 class MainActivity : ComponentActivity() {
 
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             EfisheryPriceListTheme {
-                Box {
+                Box(modifier = Modifier.fillMaxHeight()) {
                     Column {
                         Header { viewModel.getPricesByName(it) }
                         DropdownSort { by ->
@@ -50,10 +50,9 @@ class MainActivity : ComponentActivity() {
                                 "Name" -> viewModel.sortPricesByName().observe(this@MainActivity) {
                                     viewModel.setData(it)
                                 }
-                                "Price" -> viewModel.sortPricesByPrice()
-                                    .observe(this@MainActivity) {
+                                "Price" -> viewModel.sortPricesByPrice().observe(this@MainActivity) {
                                         viewModel.setData(it)
-                                    }
+                                }
                                 "Size" -> viewModel.sortPricesBySize().observe(this@MainActivity) {
                                     viewModel.setData(it)
                                 }
@@ -119,9 +118,10 @@ fun DropdownSort(filter: (String) -> Unit) {
 
 @Composable
 fun ItemData(fish: Fish) {
-    if (fish.name.length < 25) {
-        Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.padding(20.dp)) {
-            Column {
+    //Untuk mencegah beberapa data yang terlalu panjang namanya
+    if (fish.name.length < 30) {
+        Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 Text(fish.name, fontSize = 18.sp, color = Color.Black)
                 Text("${fish.city}, ${fish.province}", modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
                 Text(fish.price.toRupiah(), fontSize = 20.sp)
@@ -131,13 +131,13 @@ fun ItemData(fish: Fish) {
 }
 
 @Composable
-fun Header(callback: (String) -> Unit) {
+fun Header(search: (String) -> Unit) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         val textState = remember { mutableStateOf("") }
         val view = LocalView.current
         val onValueChange: (String) -> Unit = {
-            textState.value = ""
-            callback(textState.value)
+            textState.value = it
+            search(textState.value)
         }
         Image(painterResource(R.drawable.logo_efishery), "logo efishery")
         Card (
@@ -166,7 +166,8 @@ fun Header(callback: (String) -> Unit) {
                     view.clearFocus()
                 }),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
+                    imeAction = ImeAction.Done,
+                    keyboardType = KeyboardType.Text
                 )
             )
         }

@@ -40,20 +40,4 @@ class GetApiWorker(private val context: Context, params: WorkerParameters): Work
             Result.failure()
         }
     }
-
-    private fun <T> Call<T>.enqueueData(callback: (T) -> Unit) {
-        enqueue(object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                if (response.isSuccessful) {
-                    callback(response.body() as T)
-                } else {
-                    Log.e(ContentValues.TAG, "onFailure: ${response.message()}")
-                }
-            }
-
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                Log.e(ContentValues.TAG, "onFailure: ${t.message.toString()}")
-            }
-        })
-    }
 }
