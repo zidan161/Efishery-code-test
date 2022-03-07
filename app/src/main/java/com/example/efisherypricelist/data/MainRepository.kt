@@ -39,7 +39,7 @@ class MainRepository(private val application: Application) {
         return mFishDao.getFishOrderBySize()
     }
 
-    private fun updatePrices() {
+    fun updatePrices() {
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
         val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<GetApiWorker>()

@@ -9,7 +9,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -17,12 +16,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.example.efisherypricelist.data.MainRepository
 import com.example.efisherypricelist.ui.theme.EfisheryPriceListTheme
@@ -38,30 +37,45 @@ class AddDataActivity : ComponentActivity() {
 
         setContent {
             EfisheryPriceListTheme {
-                Column(verticalArrangement = Arrangement.Center) {
+                Surface {
                     if (!isNetworkAvailable()) {
                         Image(painterResource(R.drawable.ic_no_internet),"no_internet")
                         Text("No Internet Connection!")
                     } else {
-                        Column {
-                            val name = remember { mutableStateOf(TextFieldValue()) }
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(20.dp)) {
+                            var name by remember { mutableStateOf("") }
+                            var price by remember { mutableStateOf("") }
 
                             OutlinedTextField(
-                                value = name.value,
-                                onValueChange = { name.value = it }
+                                value = name,
+                                onValueChange = { name = it },
+                                label = { Text("Name") },
+                                modifier = Modifier.fillMaxWidth()
                             )
                             val listArea by viewModel.getArea().observeAsState(initial = emptyList())
-                            val listText = mutableListOf<String>()
+                            val area = mutableListOf<String>()
                             for (i in listArea) {
-                                listText.add("${i.city}, ${i.province}")
+                                area.add("${i.city}, ${i.province}")
                             }
-                            ExposedTextField(listText)
-                            Row {
+                            ExposedTextField(area, Modifier.fillMaxWidth(), "Area")
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                 OutlinedTextField(
-                                    value = name.value,
-                                    onValueChange = { name.value = it }
+                                    value = price,
+                                    onValueChange = { price = it },
+                                    label = { Text("Price") },
+                                    modifier = Modifier.weight(1.5f)
                                 )
-                                
+                                val listSize by viewModel.getSize().observeAsState(initial = emptyList())
+                                val size = mutableListOf<String>()
+                                for (i in listSize) {
+                                    size.add(i.size)
+                                }
+                                ExposedTextField(size, Modifier.weight(1f), "Size")
+                            }
+                            Row {
+                                Button(onClick = {viewModel.getArea()}, ) {
+                                    Text("OK")
+                                }
                             }
                         }
                     }
@@ -79,40 +93,44 @@ class AddDataActivity : ComponentActivity() {
 }
 
 @Composable
-fun ExposedTextField(data: List<String>) {
+fun ExposedTextField(data: List<String>, modifier: Modifier, label: String) {
     var selectedText by remember { mutableStateOf("") }
     var textfieldSize by remember { mutableStateOf(Size.Zero)}
     var expanded by remember { mutableStateOf(false) }
 
-    val icon = if(expanded)
-        painterResource(R.drawable.ic_arrow_drop_up)
-    else
-        painterResource(R.drawable.ic_arrow_drop_down)
+    val icon = if(expanded) painterResource(R.drawable.ic_arrow_drop_up)
+    else painterResource(R.drawable.ic_arrow_drop_down)
 
-    OutlinedTextField(
-        value = selectedText,
-        onValueChange = { selectedText = it },
-        modifier = Modifier
-            .onGloballyPositioned { coordinates ->
-                //This value is used to assign to the DropDown the same width
-                textfieldSize = coordinates.size.toSize()
-            },
-        label = {Text("Area")},
-        trailingIcon = {
-            Icon(icon,"arrow", Modifier.clickable { expanded = !expanded })
-        }
-    )
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier
-            .width(with(LocalDensity.current){textfieldSize.width.toDp()})
-    ) {
-        data.forEach { text ->
-            DropdownMenuItem(onClick = {
-                selectedText = text
-            }) {
-                Text(text = text)
+    Box(modifier = modifier) {
+        OutlinedTextField(
+            value = selectedText,
+            onValueChange = { selectedText = it },
+            modifier = Modifier
+                .onFocusChanged { expanded = it.isFocused }
+                .onGloballyPositioned { coordinates ->
+                    //This value is used to assign to the DropDown the same width
+                    textfieldSize = coordinates.size.toSize()
+                }.fillMaxWidth(),
+            label = { Text(label) },
+            trailingIcon = {
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(icon, "arrow_down")
+                }
+            }
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+        ) {
+            data.forEach { text ->
+                DropdownMenuItem(onClick = {
+                    selectedText = text
+                    expanded = false
+                }) {
+                    Text(text = text)
+                }
             }
         }
     }

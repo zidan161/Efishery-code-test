@@ -8,4 +8,6 @@ class AddDataViewModel(private val repository: MainRepository): ViewModel() {
     fun getArea() = repository.getAllArea()
 
     fun getSize() = repository.getAllSize()
+
+    fun postPrice() = repository.getPrices()
 }

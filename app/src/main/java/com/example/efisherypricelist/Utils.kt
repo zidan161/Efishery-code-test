@@ -4,6 +4,8 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun randomUUID() = UUID.randomUUID().toString()
+
 fun getDate(): String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.getDefault()).format(Date())
 
 fun getTimeStamp(): String {

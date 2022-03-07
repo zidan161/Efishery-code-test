@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                         }
                         val listData by viewModel.prices.observeAsState(initial = emptyList())
                         LazyColumn(
-                            contentPadding = PaddingValues(20.dp),
+                            contentPadding = PaddingValues(20.dp, 10.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                         ) {
                             items(listData) { fish ->
@@ -74,9 +74,7 @@ class MainActivity : ComponentActivity() {
                             val intent = Intent(this@MainActivity, AddDataActivity::class.java)
                             startActivity(intent)
                         }
-                    ) {
-                        Text("+")
-                    }
+                    ) { Text("+") }
                 }
             }
         }
@@ -122,8 +120,8 @@ fun ItemData(fish: Fish) {
     if (fish.name.length < 30) {
         Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(20.dp)) {
-                Text(fish.name, fontSize = 18.sp, color = Color.Black)
-                Text("${fish.city}, ${fish.province}", modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
+                Text(fish.name, fontSize = 14.sp, color = Color.Black)
+                Text("${fish.city}, ${fish.province}", fontSize = 12.sp, color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
                 Text(fish.price.toRupiah(), fontSize = 20.sp)
             }
         }
@@ -132,16 +130,18 @@ fun ItemData(fish: Fish) {
 
 @Composable
 fun Header(search: (String) -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        val textState = remember { mutableStateOf("") }
-        val view = LocalView.current
-        val onValueChange: (String) -> Unit = {
-            textState.value = it
-            search(textState.value)
+    val textState = remember { mutableStateOf("") }
+    val view = LocalView.current
+    val onValueChange: (String) -> Unit = {
+        textState.value = it
+        search(textState.value)
+    }
+    Box(modifier = Modifier.height(200.dp)) {
+        Surface(color = Color(77,199,160), modifier = Modifier.fillMaxSize().padding(0.dp, 0.dp, 0.dp, 30.dp)) {
+            Image(painterResource(R.drawable.logo_efishery), "logo efishery", modifier = Modifier.padding(70.dp))
         }
-        Image(painterResource(R.drawable.logo_efishery), "logo efishery")
         Card (
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(10.dp).align(Alignment.BottomCenter),
             elevation = 10.dp,
             shape = RoundedCornerShape(20.dp)
         ) {
@@ -153,6 +153,7 @@ fun Header(search: (String) -> Unit) {
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
+                label = { Text("Search") },
                 trailingIcon = {
                     if (textState.value.isEmpty()) {
                         Icon(painterResource(R.drawable.ic_search), "search")
