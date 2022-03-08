@@ -19,11 +19,20 @@ class FishViewModel(private val repository: MainRepository): ViewModel() {
 
     fun getPrices() = repository.getPrices()
 
-    fun sortPricesByName() = repository.orderPricesByName()
+    fun sortPricesByName() {
+        listPrice.sortBy { it.name }
+        prices.value = listPrice
+    }
 
-    fun sortPricesByPrice() = repository.orderPricesByPrice()
+    fun sortPricesByPrice() {
+        listPrice.sortBy { it.price }
+        prices.value = listPrice
+    }
 
-    fun sortPricesBySize() = repository.orderPricesBySize()
+    fun sortPricesBySize() {
+        listPrice.sortBy { it.size }
+        prices.value = listPrice
+    }
 
     fun getPricesByName(name: String) {
         listPrice.filter {

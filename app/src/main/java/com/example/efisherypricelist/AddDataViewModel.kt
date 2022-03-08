@@ -14,6 +14,9 @@ class AddDataViewModel(private val repository: MainRepository): ViewModel() {
 
     fun postPrice(name: String, province: String, city: String, size: Int, price: Int): LiveData<FishPostResponse> {
         val fish = Fish(randomUUID(), name, province, city, size, price, getDate(), getTimeStamp())
+        println(fish)
         return repository.postPrice(fish)
     }
+
+    fun refreshData() { repository.updatePrices() }
 }

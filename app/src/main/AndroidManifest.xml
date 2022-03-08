@@ -13,6 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EfisheryPriceList">
         <activity
+            android:name=".DetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/Theme.EfisheryPriceList.NoActionBar" />
+        <activity
             android:name=".AddDataActivity"
             android:exported="false"
             android:label="@string/title_activity_add_data"

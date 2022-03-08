@@ -1,14 +1,9 @@
 package com.example.efisherypricelist.data.remote
 
-import android.content.ContentValues
 import android.content.Context
-import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.efisherypricelist.data.local.MainDatabase
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 

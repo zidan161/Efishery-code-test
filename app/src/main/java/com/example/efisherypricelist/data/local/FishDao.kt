@@ -23,13 +23,4 @@ interface FishDao {
 
     @Query("SELECT * from fish")
     fun getFish(): LiveData<List<Fish>>
-
-    @Query("SELECT * from fish ORDER BY name")
-    fun getFishOrderByName(): LiveData<List<Fish>>
-
-    @Query("SELECT * from fish ORDER BY price")
-    fun getFishOrderByPrice(): LiveData<List<Fish>>
-
-    @Query("SELECT * from fish ORDER BY size")
-    fun getFishOrderBySize(): LiveData<List<Fish>>
 }

@@ -35,37 +35,21 @@ class AddDataActivity : ComponentActivity() {
 
         viewModel = AddDataViewModel(MainRepository(application))
 
-        val area = mutableListOf<String>()
-        val allSize = mutableListOf<String>()
-
-        val liveArea = viewModel.getArea()
-        val liveSize = viewModel.getSize()
-
-        liveArea.observe(this) {
-            for (i in it) {
-                area.add("${i.city}, ${i.province}")
-            }
-        }
-
-        liveSize.observe(this) {
-            for (i in it) {
-                allSize.add(i.size.toString())
-            }
-        }
-
         setContent {
             EfisheryPriceListTheme {
                 Surface {
                     if (!isNetworkAvailable()) {
-                        Image(painterResource(R.drawable.ic_no_internet),"no_internet")
-                        Text("No Internet Connection!")
+                        Column {
+                            Image(painterResource(R.drawable.ic_no_internet), "no_internet")
+                            Text("No Internet Connection!")
+                        }
                     } else {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(20.dp)) {
                             var name by remember { mutableStateOf("") }
                             var price by remember { mutableStateOf("") }
-                            var city = ""
-                            var province = ""
-                            var size = 0
+                            var city by remember { mutableStateOf("") }
+                            var province by remember { mutableStateOf("") }
+                            var size by remember { mutableStateOf(0) }
 
                             OutlinedTextField(
                                 value = name,
@@ -77,7 +61,6 @@ class AddDataActivity : ComponentActivity() {
                             ExposedTextField(area, Modifier.fillMaxWidth(), "Area") { i ->
                                 city = liveArea.value!![i].city
                                 province = liveArea.value!![i].province
-                                println("$city $province")
                             }
                             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                 OutlinedTextField(
@@ -102,9 +85,11 @@ class AddDataActivity : ComponentActivity() {
                                 }
                                 Button(
                                     onClick = {
-                                        viewModel.postPrice(name, province, city, size, price.toInt())
-                                        Toast.makeText(this@AddDataActivity, "Success added data", Toast.LENGTH_SHORT).show()
-                                        finish()
+                                        postData(name, province, city, size, price.toInt()) {
+                                            Toast.makeText(this@AddDataActivity, "Success added data", Toast.LENGTH_SHORT).show()
+                                            viewModel.refreshData()
+                                            finish()
+                                        }
                                     },
                                     modifier = Modifier.wrapContentWidth()) {
                                     Text("Add")
@@ -114,6 +99,20 @@ class AddDataActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun postData(
+        name: String,
+        province: String,
+        city: String,
+        size: Int,
+        price: Int,
+        onFinished: () -> Unit
+    ) {
+        val post = viewModel.postPrice(name, province, city, size, price)
+        post.observe(this) {
+            if (it != null) onFinished()
         }
     }
 

@@ -1,10 +1,12 @@
  package com.example.efisherypricelist
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -47,21 +49,15 @@ class MainActivity : ComponentActivity() {
                         Header { viewModel.getPricesByName(it) }
                         DropdownSort { by ->
                             when (by) {
-                                "Name" -> viewModel.sortPricesByName().observe(this@MainActivity) {
-                                    viewModel.setData(it)
-                                }
-                                "Price" -> viewModel.sortPricesByPrice().observe(this@MainActivity) {
-                                        viewModel.setData(it)
-                                }
-                                "Size" -> viewModel.sortPricesBySize().observe(this@MainActivity) {
-                                    viewModel.setData(it)
-                                }
+                                "Name" -> viewModel.sortPricesByName()
+                                "Price" -> viewModel.sortPricesByPrice()
+                                "Size" -> viewModel.sortPricesBySize()
                             }
                         }
                         val listData by viewModel.prices.observeAsState(listOf())
                         LazyColumn(
                             contentPadding = PaddingValues(20.dp, 10.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(listData) { fish ->
                                 ItemData(fish)
