@@ -13,19 +13,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import com.example.efisherypricelist.data.MainRepository
 import com.example.efisherypricelist.ui.theme.EfisheryPriceListTheme
 
@@ -59,7 +53,8 @@ class AddDataActivity : ComponentActivity() {
         setContent {
             EfisheryPriceListTheme {
                 Surface {
-                    if (!isNetworkAvailable()) {
+                    val network by remember { mutableStateOf(isNetworkAvailable()) }
+                    if (!network) {
                         Column(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -153,50 +148,5 @@ class AddDataActivity : ComponentActivity() {
         val connManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities = connManager.getNetworkCapabilities(connManager.activeNetwork)
         return (capabilities != null && capabilities.hasCapability(NET_CAPABILITY_INTERNET))
-    }
-}
-
-@Composable
-fun ExposedTextField(data: List<String>, modifier: Modifier, label: String, selected: (Int) -> Unit) {
-    var selectedText by remember { mutableStateOf("") }
-    var textfieldSize by remember { mutableStateOf(Size.Zero)}
-    var expanded by remember { mutableStateOf(false) }
-
-    val icon = if(expanded) painterResource(R.drawable.ic_arrow_drop_up)
-    else painterResource(R.drawable.ic_arrow_drop_down)
-
-    Box(modifier = modifier) {
-        OutlinedTextField(
-            value = selectedText,
-            onValueChange = { selectedText = it },
-            modifier = Modifier
-                .onFocusChanged { expanded = it.isFocused }
-                .onGloballyPositioned { coordinates ->
-                    //This value is used to assign to the DropDown the same width
-                    textfieldSize = coordinates.size.toSize()
-                }.fillMaxWidth(),
-            label = { Text(label) },
-            trailingIcon = {
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(icon, "arrow_down")
-                }
-            }
-        )
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
-        ) {
-            data.forEachIndexed { i, text ->
-                DropdownMenuItem(onClick = {
-                    selectedText = text
-                    expanded = false
-                    selected(i)
-                }) {
-                    Text(text = text)
-                }
-            }
-        }
     }
 }
