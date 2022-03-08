@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             items(listData) { fish ->
-                                ItemData(fish)
+                                ItemData(fish, this@MainActivity)
                             }
                         }
                     }
@@ -111,10 +111,19 @@ fun DropdownSort(filter: (String) -> Unit) {
 }
 
 @Composable
-fun ItemData(fish: Fish) {
+fun ItemData(fish: Fish, activity: Activity) {
     //Untuk mencegah beberapa data yang terlalu panjang namanya
     if (fish.name.length < 30) {
-        Card(shape = RoundedCornerShape(16.dp), modifier = Modifier.fillMaxWidth()) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    val intent = Intent(activity, DetailActivity::class.java)
+                    intent.putExtra("data", fish)
+                    activity.startActivity(intent)
+                }
+        ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(fish.name, fontSize = 14.sp, color = Color.Black)
                 Text("${fish.city}, ${fish.province}", fontSize = 12.sp, color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
@@ -154,7 +163,10 @@ fun Header(search: (String) -> Unit) {
                     if (textState.value.isEmpty()) {
                         Icon(painterResource(R.drawable.ic_search), "search")
                     } else {
-                        IconButton(onClick = { onValueChange("") }) {
+                        IconButton(onClick = {
+                            onValueChange("")
+                            view.clearFocus()
+                        }) {
                             Icon(painterResource(R.drawable.ic_clear), "clear")
                         }
                     }
