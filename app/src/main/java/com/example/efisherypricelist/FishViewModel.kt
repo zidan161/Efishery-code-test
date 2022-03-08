@@ -26,7 +26,13 @@ class FishViewModel(private val repository: MainRepository): ViewModel() {
     fun sortPricesBySize() = repository.orderPricesBySize()
 
     fun getPricesByName(name: String) {
-        listPrice.filter { it.name.lowercase().contains(name.lowercase()) }.let {
+        listPrice.filter {
+            it.name.lowercase().contains(name.lowercase()) ||
+                    it.city.lowercase().contains(name.lowercase()) ||
+                    it.province.lowercase().contains(name.lowercase()) ||
+                    it.price.toString().contains(name) ||
+                    it.size.toString().contains(name)
+        }.let {
             prices.value = it
         }
     }

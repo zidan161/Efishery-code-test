@@ -10,6 +10,7 @@ import com.example.efisherypricelist.data.remote.GetApiWorker
 import com.example.efisherypricelist.data.remote.enqueueDataLive
 import com.example.efisherypricelist.model.Area
 import com.example.efisherypricelist.model.Fish
+import com.example.efisherypricelist.model.FishPostResponse
 import com.example.efisherypricelist.model.Size
 
 class MainRepository(private val application: Application) {
@@ -50,6 +51,10 @@ class MainRepository(private val application: Application) {
                 .build()
 
         WorkManager.getInstance(application).enqueue(request)
+    }
+
+    fun postPrice(data: Fish): LiveData<FishPostResponse> {
+        return apiHelper.postPrice(listOf(data)).enqueueDataLive()
     }
 
     fun getAllArea(): LiveData<List<Area>> = apiHelper.getArea().enqueueDataLive()

@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                         }
-                        val listData by viewModel.prices.observeAsState(initial = emptyList())
+                        val listData by viewModel.prices.observeAsState(listOf())
                         LazyColumn(
                             contentPadding = PaddingValues(20.dp, 10.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
