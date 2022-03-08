@@ -2,6 +2,7 @@ package com.example.efisherypricelist.data.remote
 
 import com.example.efisherypricelist.model.Area
 import com.example.efisherypricelist.model.Fish
+import com.example.efisherypricelist.model.FishPostResponse
 import com.example.efisherypricelist.model.Size
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -33,14 +34,7 @@ class ApiHelper {
         @GET("option_size")
         fun getSize(): Call<List<Size>>
 
-//        @FormUrlEncoded
-//        @POST("cost")
-//        fun postPrices(
-//            @Field("komoditas") komoditas: String,
-//            @Field("area_provinsi") province: String,
-//            @Field("area_kota") city: String,
-//            @Field("size") size: Int,
-//            @Field("price") price: Int
-//        ) : Call<CostResponse>
+        @POST("list")
+        fun postPrice(@Body fish: List<Fish>) : Call<FishPostResponse>
     }
 }
