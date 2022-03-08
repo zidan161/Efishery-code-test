@@ -79,7 +79,7 @@ class AddDataActivity : ComponentActivity() {
                             var province by remember { mutableStateOf("") }
                             var size by remember { mutableStateOf(0) }
 
-                            Text("Add New Data +", fontSize = 25.sp)
+                            Text("Add New Data +", fontSize = 25.sp, modifier = Modifier.fillMaxWidth())
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },

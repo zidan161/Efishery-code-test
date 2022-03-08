@@ -14,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -70,7 +72,7 @@ class MainActivity : ComponentActivity() {
                             val intent = Intent(this@MainActivity, AddDataActivity::class.java)
                             startActivity(intent)
                         }
-                    ) { Text("+") }
+                    ) { Icons.Filled.Add }
                 }
             }
         }
@@ -125,9 +127,21 @@ fun ItemData(fish: Fish, activity: Activity) {
                 }
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
-                Text(fish.name, fontSize = 14.sp, color = Color.Black)
-                Text("${fish.city}, ${fish.province}", fontSize = 12.sp, color = Color.DarkGray, modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp))
-                Text(fish.price.toRupiah(), fontSize = 20.sp)
+                Text(
+                    fish.name,
+                    fontSize = 14.sp,
+                    color = Color.Black
+                )
+                Text(
+                    "${fish.city}, ${fish.province}",
+                    fontSize = 12.sp,
+                    color = Color.Gray,
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
+                )
+                Text(
+                    fish.price.toRupiah(),
+                    fontSize = 20.sp
+                )
             }
         }
     }

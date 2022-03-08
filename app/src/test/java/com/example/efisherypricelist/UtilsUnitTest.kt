@@ -11,7 +11,7 @@ import org.junit.Assert.*
  */
 class UtilsUnitTest {
     @Test
-    fun toDate() {
-        assertEquals(getDate(), "")
+    fun toRupiah() {
+        assertEquals("Rp. 10,000", (10000).toRupiah())
     }
 }
