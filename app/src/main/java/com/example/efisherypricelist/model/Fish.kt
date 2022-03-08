@@ -31,3 +31,5 @@ data class Fish(
     @SerializedName("timestamp")
     var timestamp: String?
 )
+
+data class FishPostResponse(@SerializedName("updatedRange") val updateRange: String)

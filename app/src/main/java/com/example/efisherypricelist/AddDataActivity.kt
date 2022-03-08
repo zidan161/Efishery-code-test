@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -14,7 +15,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
@@ -35,6 +35,24 @@ class AddDataActivity : ComponentActivity() {
 
         viewModel = AddDataViewModel(MainRepository(application))
 
+        val area = mutableListOf<String>()
+        val allSize = mutableListOf<String>()
+
+        val liveArea = viewModel.getArea()
+        val liveSize = viewModel.getSize()
+
+        liveArea.observe(this) {
+            for (i in it) {
+                area.add("${i.city}, ${i.province}")
+            }
+        }
+
+        liveSize.observe(this) {
+            for (i in it) {
+                allSize.add(i.size.toString())
+            }
+        }
+
         setContent {
             EfisheryPriceListTheme {
                 Surface {
@@ -45,6 +63,9 @@ class AddDataActivity : ComponentActivity() {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(20.dp)) {
                             var name by remember { mutableStateOf("") }
                             var price by remember { mutableStateOf("") }
+                            var city = ""
+                            var province = ""
+                            var size = 0
 
                             OutlinedTextField(
                                 value = name,
@@ -52,29 +73,41 @@ class AddDataActivity : ComponentActivity() {
                                 label = { Text("Name") },
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            val listArea by viewModel.getArea().observeAsState(initial = emptyList())
-                            val area = mutableListOf<String>()
-                            for (i in listArea) {
-                                area.add("${i.city}, ${i.province}")
+
+                            ExposedTextField(area, Modifier.fillMaxWidth(), "Area") { i ->
+                                city = liveArea.value!![i].city
+                                province = liveArea.value!![i].province
+                                println("$city $province")
                             }
-                            ExposedTextField(area, Modifier.fillMaxWidth(), "Area")
                             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                                 OutlinedTextField(
                                     value = price,
                                     onValueChange = { price = it },
                                     label = { Text("Price") },
-                                    modifier = Modifier.weight(1.5f)
+                                    modifier = Modifier.weight(1.5f),
                                 )
-                                val listSize by viewModel.getSize().observeAsState(initial = emptyList())
-                                val size = mutableListOf<String>()
-                                for (i in listSize) {
-                                    size.add(i.size)
+
+                                ExposedTextField(allSize, Modifier.weight(1f), "Size") { i ->
+                                    size = liveSize.value!![i].size
                                 }
-                                ExposedTextField(size, Modifier.weight(1f), "Size")
                             }
-                            Row {
-                                Button(onClick = {viewModel.getArea()}, ) {
-                                    Text("OK")
+                            Row(
+                                horizontalArrangement = Arrangement.End.also { Arrangement.spacedBy(10.dp) },
+                                modifier = Modifier.fillMaxWidth()) {
+                                OutlinedButton(
+                                    onClick = { finish() },
+                                    modifier = Modifier.wrapContentWidth()
+                                ) {
+                                    Text("Cancel")
+                                }
+                                Button(
+                                    onClick = {
+                                        viewModel.postPrice(name, province, city, size, price.toInt())
+                                        Toast.makeText(this@AddDataActivity, "Success added data", Toast.LENGTH_SHORT).show()
+                                        finish()
+                                    },
+                                    modifier = Modifier.wrapContentWidth()) {
+                                    Text("Add")
                                 }
                             }
                         }
@@ -93,7 +126,7 @@ class AddDataActivity : ComponentActivity() {
 }
 
 @Composable
-fun ExposedTextField(data: List<String>, modifier: Modifier, label: String) {
+fun ExposedTextField(data: List<String>, modifier: Modifier, label: String, selected: (Int) -> Unit) {
     var selectedText by remember { mutableStateOf("") }
     var textfieldSize by remember { mutableStateOf(Size.Zero)}
     var expanded by remember { mutableStateOf(false) }
@@ -124,10 +157,11 @@ fun ExposedTextField(data: List<String>, modifier: Modifier, label: String) {
             modifier = Modifier
                 .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
         ) {
-            data.forEach { text ->
+            data.forEachIndexed { i, text ->
                 DropdownMenuItem(onClick = {
                     selectedText = text
                     expanded = false
+                    selected(i)
                 }) {
                     Text(text = text)
                 }
