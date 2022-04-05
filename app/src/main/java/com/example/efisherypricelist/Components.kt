@@ -31,11 +31,12 @@ fun DropdownSort(filter: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val items = listOf("Name", "Price", "Size")
     var selectedText by remember { mutableStateOf("Sort By") }
-    Column (
+    Column(
         modifier = Modifier.fillMaxWidth()
             .wrapContentSize(Alignment.TopEnd)
             .padding(20.dp, 0.dp),
-        horizontalAlignment = Alignment.End) {
+        horizontalAlignment = Alignment.End
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(selectedText)
             IconButton(onClick = { expanded = true }) {
@@ -103,10 +104,17 @@ fun Header(search: (String) -> Unit) {
         search(textState.value)
     }
     Box(modifier = Modifier.height(200.dp)) {
-        Surface(color = Color(77,199,160), modifier = Modifier.fillMaxSize().padding(0.dp, 0.dp, 0.dp, 30.dp)) {
-            Image(painterResource(R.drawable.logo_efishery), "logo efishery", modifier = Modifier.padding(70.dp))
+        Surface(
+            color = Color(77, 199, 160),
+            modifier = Modifier.fillMaxSize().padding(0.dp, 0.dp, 0.dp, 30.dp)
+        ) {
+            Image(
+                painterResource(R.drawable.logo_efishery),
+                "logo efishery",
+                modifier = Modifier.padding(70.dp)
+            )
         }
-        Card (
+        Card(
             modifier = Modifier.padding(10.dp).align(Alignment.BottomCenter),
             elevation = 10.dp,
             shape = RoundedCornerShape(20.dp)
@@ -145,12 +153,17 @@ fun Header(search: (String) -> Unit) {
 }
 
 @Composable
-fun ExposedTextField(data: List<String>, modifier: Modifier, label: String, selected: (Int) -> Unit) {
+fun ExposedTextField(
+    data: List<String>,
+    modifier: Modifier,
+    label: String,
+    selected: (Int) -> Unit
+) {
     var selectedText by remember { mutableStateOf("") }
-    var textfieldSize by remember { mutableStateOf(Size.Zero)}
+    var textfieldSize by remember { mutableStateOf(Size.Zero) }
     var expanded by remember { mutableStateOf(false) }
 
-    val icon = if(expanded) painterResource(R.drawable.ic_arrow_drop_up)
+    val icon = if (expanded) painterResource(R.drawable.ic_arrow_drop_up)
     else painterResource(R.drawable.ic_arrow_drop_down)
 
     Box(modifier = modifier) {
@@ -189,38 +202,10 @@ fun ExposedTextField(data: List<String>, modifier: Modifier, label: String, sele
     }
 }
 
-
 @Composable
-fun DetailView(data: Fish) {
-    Surface(color = Color(77, 199, 160)) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(20.dp, 50.dp).fillMaxSize(),
-        ) {
-            Text(data.name, color = Color.White, fontSize = 30.sp)
-            Card(
-                shape = RoundedCornerShape(20.dp),
-                elevation = 10.dp,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-                    TextOnList("Area", "${data.city}, ${data.province}")
-                    TextOnList("Price", data.price.toRupiah())
-                    TextOnList("Size", data.size.toString())
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun TextOnList(name: String, value: String) {
+fun TextOnList(name: String, text: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("$name:", color = Color.Gray)
-        Text(value)
+        Text(text)
     }
 }

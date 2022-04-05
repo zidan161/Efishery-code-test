@@ -33,6 +33,6 @@ data class Fish(
 
     @SerializedName("timestamp")
     var timestamp: String?
-): Parcelable
+) : Parcelable
 
 data class FishPostResponse(@SerializedName("updatedRange") val updateRange: String)

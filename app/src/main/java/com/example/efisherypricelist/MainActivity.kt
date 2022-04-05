@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             EfisheryPriceListTheme {
                 Box(modifier = Modifier.fillMaxHeight()) {
                     Column {
-                        Header { viewModel.getPricesByName(it) }
+                        Header { viewModel.getPricesBySearch(it) }
                         DropdownSort { by ->
                             when (by) {
                                 "Name" -> viewModel.sortPricesByName()

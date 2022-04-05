@@ -35,6 +35,6 @@ class ApiHelper {
         fun getSize(): Call<List<Size>>
 
         @POST("list")
-        fun postPrice(@Body fish: List<Fish>) : Call<FishPostResponse>
+        fun postPrice(@Body fish: List<Fish>): Call<FishPostResponse>
     }
 }

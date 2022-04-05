@@ -6,7 +6,8 @@ import java.util.*
 
 fun randomUUID() = UUID.randomUUID().toString()
 
-fun getDate(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).format(Date())
+fun getDate(): String =
+    SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.getDefault()).format(Date())
 
 fun getTimeStamp(): String {
     val tsLong = System.currentTimeMillis() / 1000

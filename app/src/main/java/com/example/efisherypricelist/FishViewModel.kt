@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.example.efisherypricelist.data.MainRepository
 import com.example.efisherypricelist.model.Fish
 
-class FishViewModel(private val repository: MainRepository): ViewModel() {
+class FishViewModel(private val repository: MainRepository) : ViewModel() {
 
     private var listPrice = mutableListOf<Fish>()
 
@@ -20,21 +20,18 @@ class FishViewModel(private val repository: MainRepository): ViewModel() {
     fun getPrices() = repository.getPrices()
 
     fun sortPricesByName() {
-        listPrice.sortBy { it.name }
-        prices.value = listPrice
+        prices.value = listPrice.sortedBy { it.name }
     }
 
     fun sortPricesByPrice() {
-        listPrice.sortBy { it.price }
-        prices.value = listPrice
+        prices.value = listPrice.sortedBy { it.price }
     }
 
     fun sortPricesBySize() {
-        listPrice.sortBy { it.size }
-        prices.value = listPrice
+        prices.value = listPrice.sortedBy { it.size }
     }
 
-    fun getPricesByName(name: String) {
+    fun getPricesBySearch(name: String) {
         listPrice.filter {
             it.name.lowercase().contains(name.lowercase()) ||
                     it.city.lowercase().contains(name.lowercase()) ||

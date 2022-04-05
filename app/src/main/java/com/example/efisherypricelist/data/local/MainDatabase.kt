@@ -19,9 +19,10 @@ abstract class MainDatabase : RoomDatabase() {
         fun getDatabase(context: Context): MainDatabase {
             if (INSTANCE == null) {
                 synchronized(MainDatabase::class.java) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        MainDatabase::class.java, "efishery_db")
-                        .build()
+                    INSTANCE = Room.databaseBuilder(
+                        context.applicationContext,
+                        MainDatabase::class.java, "efishery_db"
+                    ).build()
                 }
             }
             return INSTANCE as MainDatabase

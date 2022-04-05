@@ -7,7 +7,8 @@ import com.example.efisherypricelist.data.local.MainDatabase
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class GetApiWorker(private val context: Context, params: WorkerParameters): Worker(context, params) {
+class GetApiWorker(private val context: Context, params: WorkerParameters) :
+    Worker(context, params) {
 
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
 
@@ -31,7 +32,7 @@ class GetApiWorker(private val context: Context, params: WorkerParameters): Work
                 }
             }
             Result.success()
-        } catch(throwable: Throwable) {
+        } catch (throwable: Throwable) {
             Result.failure()
         }
     }

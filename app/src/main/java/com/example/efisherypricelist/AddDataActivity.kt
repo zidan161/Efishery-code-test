@@ -17,10 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.efisherypricelist.data.MainRepository
+import com.example.efisherypricelist.model.Fish
 import com.example.efisherypricelist.ui.theme.EfisheryPriceListTheme
 
 class AddDataActivity : ComponentActivity() {
@@ -74,7 +76,11 @@ class AddDataActivity : ComponentActivity() {
                             var province by remember { mutableStateOf("") }
                             var size by remember { mutableStateOf(0) }
 
-                            Text("Add New Data +", fontSize = 25.sp, modifier = Modifier.fillMaxWidth())
+                            Text(
+                                "Add New Data +",
+                                fontSize = 25.sp,
+                                modifier = Modifier.fillMaxWidth()
+                            )
                             OutlinedTextField(
                                 value = name,
                                 onValueChange = { name = it },
@@ -100,7 +106,8 @@ class AddDataActivity : ComponentActivity() {
                             }
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp)) {
+                                modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp)
+                            ) {
                                 OutlinedButton(
                                     onClick = { finish() },
                                     modifier = Modifier.wrapContentWidth(),
@@ -111,7 +118,11 @@ class AddDataActivity : ComponentActivity() {
                                 Button(
                                     onClick = {
                                         postData(name, province, city, size, price.toInt()) {
-                                            Toast.makeText(this@AddDataActivity, "Success added data", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(
+                                                this@AddDataActivity,
+                                                "Success added data",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                             viewModel.refreshData()
                                             finish()
                                         }

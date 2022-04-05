@@ -29,14 +29,15 @@ class MainRepository(private val application: Application) {
     }
 
     fun updatePrices() {
-        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val constraints =
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
         val request: OneTimeWorkRequest = OneTimeWorkRequestBuilder<GetApiWorker>()
-                .setConstraints(constraints)
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 20,
-                    java.util.concurrent.TimeUnit.SECONDS
-                )
-                .build()
+            .setConstraints(constraints)
+            .setBackoffCriteria(
+                BackoffPolicy.EXPONENTIAL, 20,
+                java.util.concurrent.TimeUnit.SECONDS
+            ).build()
 
         WorkManager.getInstance(application).enqueue(request)
     }
